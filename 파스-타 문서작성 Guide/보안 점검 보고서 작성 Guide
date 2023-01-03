@@ -1,0 +1,17 @@
+보안 점검 보고서
+(google drive>team>01>) 1. ap - application 2. cp - container
+업로드
+공유파일드라이버>파트>기술지원>산출물
+
+보안 결과보고서 작성 방법
+CVE_CCE_STATISTICS.xml 참조 - CVE CCE statistics 엑셀 자료 바탕으로 업데이트 - 21년도 자료랑 비교하며 어떤 차트를 참고했는지 보기 - ap vx.x.x는 ap version / service는 그 뒤에 - linux mysql 등등 여러개 있을 때는 합계 적기 - CCE CVE 잘 구분해..제발 - 서비스는 서비스 version 적기
+-mariadb는 패치 이름 - 네이밍은 앞의 대/중/소분류 대로 하기 - 네이밍
+core bosh — 애플리케이션 플랫폼 엔진 (bosh)
+core — 애플리케이션 플랫폼 엔진
+portal api 애플리케이션 플랫폼 포탈 api
+potal ui
+service mysql mysql 서비스
+paasta monitoring logsearch 파스-타 모니터링(log)
+cp standalone 컨테이너 플랫폼 엔진 (단독배포)
+cp edge 컨테이너 플랫폼 엔진
+…

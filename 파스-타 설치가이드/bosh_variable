@@ -1,0 +1,37 @@
+# BOSH VARIABLE
+bosh_client_admin_id: "admin"			# Bosh Client Admin ID
+director_name: "micro-bosh"			# BOSH Director Name
+private_cidr: "10.0.1.0/24"			# Private IP Range
+        paasta network의 subnet01 ip주소
+private_gw: "10.0.1.1"				# Private IP Gateway
+        paasta network의 subnnet01 gateway 주소
+bosh_ip: "10.0.1.6"				# Private IP
+          bosh ip
+auth_url: "http://XX.XXX.XX.XX:XXXX/v3/"	# Openstack Keystone URL
+          openstack keystone internal url
+az: "nova"					# Openstack AZ Zone
+          instance 생성된 zone
+default_key_name: "paasta"			# Openstack Key Name
+          instance key name
+default_security_groups: ["paasta"]		# Openstack Security Group
+          instance security groups
+net_id: "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"	# Openstack Network ID
+          paasta network id
+openstack_password: "XXXXXX"			# Openstack User Password
+          openstack login user paasword
+openstack_username: "XXXXXX"			# Openstack User Name
+          openstack login user id
+openstack_domain: "XXXXXXX"			# Openstack Domain Name
+          Default
+openstack_project: "PaaSTA"			# Openstack Project
+          inctance 생성된 
+private_key: "~/.ssh/id_rsa.pem"		# Openstack Region
+        instance key name 
+        pem file을 ~/.ssh 폴더로 이동
+region: "RegionOne"				# SSH Private Key Path
+
+# MONITORING VARIABLE(PaaS-TA Monitoring을 설치할 경우 수정)
+metric_url: "10.0.161.101"          # influxdb IP
+syslog_address: "10.0.121.100"      # td-agent IP
+syslog_port: "2514"                 # td-agent Port
+syslog_transport: "udp"             # td-agent Logging Protocol
