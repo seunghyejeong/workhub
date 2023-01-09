@@ -212,7 +212,7 @@ bosh haproxy 확인법
 		vim haproxy.stderr.log
 
 inet check
-	ifconfig 
+	ifconfig 200
 
 구글 proxy 연결상태
 	nslookup google.com

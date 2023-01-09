@@ -1,3 +1,9 @@
+---
+title: mysql service 설치
+date: 2023-01
+---
+
+
 # intall
 1. mysql > vars.yml
     mysql_proxy_id          
@@ -6,6 +12,7 @@
             mysql이 해당하는 zone(z4)에 맞게 proxy_ip를 설정해준다
 
     issue
+
     ```shell
        pxc/10d96cbd35bbc303ec7495a8dadd5b4f42ec46bbce24d107fadff0ec
                     L Error: Timed out pinging VM '7e7e3d16-294482a' after 600 seconds
@@ -31,6 +38,7 @@
                 오늘은 아주 잘됨
 
 # delete
+
 2) mysql 설치 
         - cf apps 삭제 방법
                 + cf delete SAMPLE_APP_NAME
@@ -46,12 +54,13 @@
                         Purging service mysql-service-instance...
                         OK
                         ```
+                        
         - cf delete-service SERVICE_NAME
         - cf delete-service-broke SERVICE_BROKER_NAME
 
 # subnet 영역대 설정 잘하기
 
-```c
+```shell
 Instance                                                    Process State  AZ  IPs            VM CID                                VM Type  Active  Stemcell  
 mysql-broker/70e07aba-431f-41f3-be4e-1de0537c452b  running        z4  10.160.64.124  36ebbe52-81d3-46f0-987b-08d8aaf7c64c  small    true    bosh-openstack-kvm-ubuntu-bionic-go_agent/1.122  
 mysql/20525c06-fd39-4881-b2a4-78dcbbf6d1c2         running        z4  10.160.64.122  55e75413-03ba-4542-bd26-f714c583ea7d  small    true    bosh-openstack-kvm-ubuntu-bionic-go_agent/1.122  
@@ -67,7 +76,8 @@ proxy/9c048509-b5f7-4a8a-8e99-7aaf5f8d8b7e         running        z5  10.160.65.
 # JDBC 주소 형태를 ip로 만들기 
 
 - cf env APP_NAME
-```c
+
+```shell
 System-Provided:
 VCAP_SERVICES: {
   "Mysql-DB": [
@@ -98,6 +108,7 @@ VCAP_SERVICES: {
   ]
 }
 ```
+
 - JDBC url =>  "uri": "mysql://232355719a91aab3:2b84d6727d3203b3@f96e17f8-7fe7-467b-b2e8-c6ea071068b5.proxy.default.mysql.bosh:13307/op_371435a8_ec81_4ab7_9661_7a47043d6d02", 
 
 1) bosh를 통해 배포된 service로 접근하는 하기 
@@ -105,26 +116,32 @@ VCAP_SERVICES: {
 2) 관리자 모드 실행
         - ` sudo su `
 3) JDBC url을 사용하여 ping 
-        - ` ping f96e17f8-7fe7-467b-b2e8-c6ea071068b5.proxy.default.mysql.bosh `
-        ```c
-        PING f96e17f8-7fe7-467b-b2e8-c6ea071068b5.proxy.default.mysql.bosh (10.160.64.100) 56(84) bytes of data
-        64 bytes from f96e17f8-7fe7-467b-b2e8-c6ea071068b5.proxy.default.mysql.bosh (10.160.64.100): icmp_seq=1 ttl=64 time=0.348 ms
-        ```
-        - 여기서 ip는 10.160.64.100 으로 mysql proxy ip임을 확인한다.
-        - exit 후 외부 ip에서 ping을 명령했을 때 
-        ```console
-        ubuntu@paasta-ta-bami-inception-1:~/workspace/paasta-service-samples/mysql$ ping 2b84d6727d3203b3@f96e17f8-7fe7-467b-b2e8-c6ea071068b5.proxy.default.mysql.bosh
-        ping: 2b84d6727d3203b3@f96e17f8-7fe7-467b-b2e8-c6ea071068b5.proxy.default.mysql.bosh: Name or service not known
-        ```
-        가 출력된다.
+  - ` ping f96e17f8-7fe7-467b-b2e8-c6ea071068b5.proxy.default.mysql.bosh `
 
-        -> 이는 bosh로 배포한 paasta의 app은 ssh 터널링을 통해 내부 접근이 가능 및 사용을 할 수 있다는 점을 알 수 있다.
-        -> mysql clinent tool 접속시 우리는 이미 proxycap을 쓰고 있으므로 터널링이 아닌 tcp/ip로 접근해야하며, ip주소는 위에서 추출한 mysql proxy ip를 사용한다.
+  ```shell
+  PING f96e17f8-7fe7-467b-b2e8-c6ea071068b5.proxy.default.mysql.bosh (10.160.64.100) 56(84) bytes of data
+  64 bytes from f96e17f8-7fe7-467b-b2e8-c6ea071068b5.proxy.default.mysql.bosh (10.160.64.100): icmp_seq=1 ttl=64 time=0.348 ms
+  ```
+
+  - 여기서 ip는 10.160.64.100 으로 mysql proxy ip임을 확인한다.
+  - exit 후 외부 ip에서 ping을 명령했을 때 
+  
+  ```console
+  ubuntu@paasta-ta-bami-inception-1:~/workspace/paasta-service-samples/mysql$ ping 2b84d6727d3203b3@f96e17f8-7fe7-467b-b2e8-c6ea071068b5.proxy.default.mysql.bosh
+  ping: 2b84d6727d3203b3@f96e17f8-7fe7-467b-b2e8-c6ea071068b5.proxy.default.mysql.bosh: Name or service not known
+  ```
+  
+  가 출력된다.
+
+  -> 이는 bosh로 배포한 paasta의 app은 ssh 터널링을 통해 내부 접근이 가능 및 사용을 할 수 있다는 점을 알 수 있다.
+  -> mysql clinent tool 접속시 우리는 이미 proxycap을 쓰고 있으므로 터널링이 아닌 tcp/ip로 접근해야하며, ip주소는 위에서 추출한 mysql proxy ip를 사용한다.
 
 # mysql login
-`  mysql -u 232355719a91aab3 -h 10.160.64.100 -p --port 13307 `
+
+` mysql -u 232355719a91aab3 -h 10.160.64.100 -p --port 13307 `
 
 # mysql client tool 접속
+
 ```console
 VCAP_SERVICES: {
   "Mysql-DB": [

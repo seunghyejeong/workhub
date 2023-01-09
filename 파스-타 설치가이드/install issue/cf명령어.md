@@ -10,3 +10,15 @@
 # ssh터널링을 통한 내부 접속
 `bosh -d SERVICE_NAME ssh SERVICE_NAME
 
+# bosh release  보기
+`bosh rs`
+
+# bosh cloud-config 보기
+`bosh cc` 
+
+# bosh log확인
+bosh logs <APP_NAME>
+
+# 설치 수행 확인
+bosh tasks
+
