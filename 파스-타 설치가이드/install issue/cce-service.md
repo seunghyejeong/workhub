@@ -366,7 +366,7 @@ done
 
 exit 0
 ```
-# delete  release
+# delete  releasell
 
 bosh -d mysql deld
 bosh clean-up --all
