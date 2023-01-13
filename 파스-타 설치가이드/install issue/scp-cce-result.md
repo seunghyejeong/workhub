@@ -314,3 +314,29 @@ echo bosh -e ${BOSH_NAME} -d ${DEPLOYMENT_NAME} scp ${VM_NAME}:/tmp/*.txt ${TMP_
 echo chmod +x ${TMP_DIR}/*.sh >> ${TMP_DIR}/scp-cce-result.sh
 echo source ${TMP_DIR}/scp-cce-result.sh >> ${TMP_DIR}/scp-cce-result.sh
 ```
+
+
+
+
+# scp 최종 스크립트
+
+```shell
+
+#!/bin/bash
+  
+BOSH_NAME=micro-bosh
+DEPLOYMENT_NAME=mysql
+VM_NAME=mysql
+TMP_DIR=/tmp/scp-cce-result
+
+## cce-result 폴더 생성
+mkdir ${TMP_DIR}
+cd ${TMP_DIR}
+## scp.sh 생성 
+touch scp-cce-result.sh
+## scp 실행 명령어 echo
+echo bosh -e ${BOSH_NAME} -d ${DEPLOYMENT_NAME} scp ${VM_NAME}:${TMP_DIR}/*.txt ${TMP_DIR}
+
+chmod +x ${TMP_DIR}/*.sh 
+source ${TMP_DIR}/scp-cce-result.sh 
+```
