@@ -340,3 +340,4 @@ echo bosh -e ${BOSH_NAME} -d ${DEPLOYMENT_NAME} scp ${VM_NAME}:${TMP_DIR}/*.txt 
 chmod +x ${TMP_DIR}/*.sh 
 source ${TMP_DIR}/scp-cce-result.sh 
 ```
+
