@@ -1,31 +1,31 @@
-portal ui vars.yml
-	mariadb port
-	password 
-		예제대로 설정 (“<>”되어있는거"
 
-	haproxy ips 
-		portal ui ip
 
-	portal default api url 
-	-	portal api ip  
-	apache re body
-	usr re body
-		예제
+# portal ui vars.yml
 
+haproxy_public_ips:
+		portal api ip
+portal_default_api_url:
+		portal api ip
 
 api ip
-poratl api vars,yml
-	<> 예제대로 설정 (mail부분도 다 )
-	haproxy public ips == api ip 
+# poratl api vars,yml
+
+- haproxy_public_ips: 
+		portal api ip
 
 
-
-
-
-
-
-
-
+# paasta common_vars.yml
+- system_domain:
+		paasta core ip
+- portal_web_user_url:
+		portal ui ip
+- portal_web_user_ip:
+		portal ui ip
+# paasta vars.yml
+- haproxy_public_ip:  
+		common_vars.yml = system_domain
+- uaa_login_links_passwd, uaa_login_links_signup, uaa_login_logout_redirect_parameter_whitelist, uaa_client_portal_redirect_uri 
+		portal ui ip
 
 
 

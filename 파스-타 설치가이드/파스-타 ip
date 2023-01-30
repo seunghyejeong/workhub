@@ -1,5 +1,0 @@
-
-
-bosh core==system_domain==haproxy :  203.255.255.124
-portal ui ip 203.255.255.123
-portal api ip  203.255.255.107

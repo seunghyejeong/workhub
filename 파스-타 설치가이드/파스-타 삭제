@@ -14,4 +14,4 @@ $ rm -rf $HOME/.bosh
 $ rm -rf $HOME/.cf
 $ rm -rf $HOME/.credhub
 $ rm -rf $HOME/.uaac.yml
-$ rm -rf $HOME/workspace/paasta-5.0/deployment/bosh-deployment/aws/creds.yml
+$ rm -rf $HOME/workspace/paasta-5bosh en.0/deployment/bosh-deployment/aws/creds.yml
