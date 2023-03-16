@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mariadb-deployment
+spec:
+  selector:
+    matchLabels:
+      app: mariadb
+  template:
+    metadata:
+      labels:
+        app: mariadb
+  spec:
+    containers:
+    - name: mariadb
+      image: mariadb:10.7 
+      port: 
+      - containerPort: 3306
+      name: mariadb
+      volumeMounts:
+        - name: nfs-pvc
+          mountPath: "/mnt"
+    volumes:
+    - name: nfs-pvc
+      persistentVolumeClaim:
+        claimName: mariadb-pvc
+    - name: mariadb-initdb-config
+      
+  
+#------------------------------------
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: mariadb-service
+spec:
+  selector:
+  app: mariadb
+  ports:
+    - port: 3306
+
+
+#-----------------------------------
+
+apiVersion:  v1
+kind: ConfigMap
+metadata:
+  name: mariadb-initdb-config
+data:
+  init.sql: |
+    CREATE DATABASE IF NOT EXISTS testdata;
+    USE testdata;
+    CREATE TABLE dbtestuser (id INT, name VARCHAR(40), email VARCHAR(40));
+    INSERT INTO dbtestuser VALUES(1, 'admin', 'admin@admin.com');
+    INSERT INTO dbtestuser VALUES(2,'admin2', 'admin2@admin.com');
+    INSERT INTO dbtestuser VALUES(3, 'admin3', 'admin3@admin.com');
+
+

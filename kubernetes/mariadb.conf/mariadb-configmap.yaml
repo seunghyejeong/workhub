@@ -1,0 +1,14 @@
+apiVersion:  v1
+kind: ConfigMap
+metadata:
+  name: mariadb-initdb-config
+data:
+  init.sql: |
+    CREATE USER 'psta_common'@'%' IDENTIFIED BY 'paastaadmin';
+    GRANT all privileges on *.* to psta_common@localhost identified by 'paastaadmin';
+    FLUSH PRIVILEGES;
+    CREATE DATABASE admin_user;
+    USE admin_user;
+    CREATE TABLE user_info (id INT, name VARCHAR(40), email VARCHAR(40));
+    INSERT INTO user_info VALUES(1, 'admin', 'admin@admin.com');
+

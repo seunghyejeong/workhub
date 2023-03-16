@@ -1,0 +1,133 @@
+
+
+
+
+#1. PV (persistentVolume)
+#- cluster storage (node가 cluster의 resource인 것 처럼 cluster의 resource중 하나이다)
+#2. PVC(persistentVolumeClaim)
+#- 사용자의 스토리지 요청 pod와 유사하다. pod는 node의 리소스를 소비하고 PVC는 PV의 소스를 소비한다.
+#- 사용자의 다양한 문제에 대한 같은 다양한 속성을 가진 volume을 필요로 한다. -> pv의 존재하는 이유
+#- 이는 볼륨이 구현되는 방식에 대한 세부 정보를 사용자에게 노출 시키지 않고도 다양한 방식으로 제공된다. 
+
+spring작업 - jar export - make dockerfile - build image - upload dockerhub - deployment.yml with image 
+
+
+## 순서
+pv - pvc - configmap - deployment -service 
+
+kind: PersistentVolumeClaim
+kind: PersistentVolume
+kind: configmap
+kind: deployment
+kind: service 
+
+dynamic provisioning
+kind: StroageClass
+  - dynamic provisioning에서는 pv개념을 대체한다.
+
+## 참고
+종류 별 apiVersion
+
+Deployment: apps/v1
+Pod:  v1
+ReplicaSet: apps/v1
+ReplicationController:  v1
+Service:  v1
+PersistentVolume: v1
+
+
+## configMap
+
+ConfigMap
+1. 구성정보를 한곳에서 통합관리 
+  컨테이너에 따라 가질수 있는 환경 변수들의 값이 다르다. 한 컨테이너는 컨테이너의 이름 혹은 구성 환경을 저장해 놓는다면
+  한 컨테이너는 유저의 관련된 정보를 저장 해 놓을 수 있다. 이러한 구성 정보는 변경된다면 컨테이너 마다 들어가서 수정을
+  해주어야하는 번거로음이 있는데, 이를 해결 하기 위해 configMap이라는 API를 만들고 컨테이너 구성 정보를 한곳에 모아서 
+  정리해 놓고 필요시 한 곳에서 입출력을 할 수 있게 만들어 놓았다.
+
+  - configmap 생성 후 pod에게 전달 방법
+    1. 환경변수
+    2. args
+    3. volume mount
+
+
+
+### 순서정리
+
+1. nfs server 생성
+2. nfs server 와 master / worker node  mount 
+3.  pv/pvc 생성
+  nfs server는 provisioner을 통해 연결됨
+    - nfs deployment.yaml (provisioner)
+    - nfs storageclass.yaml (pv개념)
+    - nfs pvc 생성 (spec.storageClassName: stroageClassname과 일치시켜주기)
+    - rbac.yaml 
+    => 배포
+3. test pod  배포해보고 잘 실행되는지 확인
+4. configmap 작성
+5. mariadb password 설정 및 변수 적용 
+--------------- 배포하기 
+
+5. service/deployment
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: mariadb
+spec:
+  selector:
+   app: mariadb
+  ports:
+  - port: 3306
+
+
+---
+
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mariadb
+  labels:
+    app: mariadb
+spec:
+  selector:
+    matchLabels:
+      app: mariadb
+  template:
+    metadata:
+      labels:
+        app: mariadb
+    spec:
+      containers:
+      - name: mariadb
+        image: mariadb:10.7   #mariadb image
+        env:
+          - name: MARIADB_ROOT_PASSWORD   # password 변수 적용 
+            valueFrom:
+              secretKeyRef:
+                name: mariadb-secret
+                key: password
+        securityContext:
+          readOnlyRootFilesystem: false 
+        ports: 
+        - containerPort: 3306
+          name: mariadb
+        volumeMounts:   ## mount 할 폴더와 이름 
+        - name: nfs-pvc
+          mountPath: "/home/ubuntu/workspace/mariadb-configmap-task"
+        - name: mariadb-data
+          mountPath: "/mysql"
+      volumes:
+      - name: nfs-pvc   ## 볼륨마운트와 연결할 볼륨 pvc name
+        persistentVolumeClaim:
+          claimName: mariadb-pvc
+      - name: mariadb-data
+        configMap:
+          name: mariadb-initdb-config
+
+---
+
+6. pod 확인 
+kubectl exec -it pod/mariadb-69d9f74d79-rrmg7 -- bash
