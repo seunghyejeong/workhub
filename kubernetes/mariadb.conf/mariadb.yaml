@@ -1,0 +1,126 @@
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: mariadb
+spec:
+  selector:
+   app: mariadb
+  ports:
+  - port: 3306
+
+
+---
+
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mariadb
+  labels:
+    app: mariadb
+spec:
+  selector:
+    matchLabels:
+      app: mariadb
+  template:
+    metadata:
+      labels:
+        app: mariadb
+    spec:
+      containers:
+      - name: mariadb
+        image: mariadb:10.7
+        env:
+          - name: MARIADB_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: mariadb-secret
+                key: password
+          - name: MYSQL_USER
+            value: bami
+        securityContext:
+          readOnlyRootFilesystem: false 
+        ports: 
+        - containerPort: 3306
+          name: mariadb
+        volumeMounts:
+        - name: nfs-pvc
+          mountPath: "/home/ubuntu/workspace/mariadb-configmap-task"
+        - name: mariadb-data
+          mountPath: "/mysql"
+      volumes:
+      - name: nfs-pvc
+        persistentVolumeClaim:
+          claimName: mariadb-pvc
+      - name: mariadb-data
+        configMap:
+          name: mariadb-initdb-config
+
+---
+
+
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: mariadb
+spec:
+  selector:
+   app: mariadb
+  ports:
+  - port: 3306
+
+
+---
+
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mariadb
+  labels:
+    app: mariadb
+spec:
+  selector:
+    matchLabels:
+      app: mariadb
+  template:
+    metadata:
+      labels:
+        app: mariadb
+    spec:
+      containers:
+      - name: mariadb
+        image: mariadb:10.7
+        securityContext:
+          readOnlyRootFilesystem: true
+        env:
+          - name: MARIADB_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: mariadb-secret
+                key: password
+          - name: MARIADB_USER
+            valueFrom:
+              secretKeyRef:
+                name: mariadb-secret
+                key: username
+        ports: 
+        - containerPort: 3306
+          name: mariadb
+        volumeMounts:
+        - name: mariadb-persistent-volume
+          mountPath: /mnt
+        - name: mariadb-config-volume
+          mountPath: /docker-entrypoint-initdb.d
+      volumes:
+      - name: mariadb-persistent-volume
+        persistentVolumeClaim:
+          claimName: mariadb-pvc
+      - name: mariadb-config-volume
+        configMap:
+          name: config-init

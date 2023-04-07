@@ -1,0 +1,17 @@
+#Deployment 삭제
+$ bosh -e micro-bosh delete-deployment -d paasta
+$ bosh -e micro-bosh delete-deployment -d portal-ui
+$ bosh -e micro-bosh delete-deployment -d portal-api
+
+#가비지 삭제
+$ bosh -e micro-bosh clean-up --all
+
+#Bosh 삭제
+$ ./delete-deploy-{iaas}.sh
+
+#완전초기화 작업
+$ rm -rf $HOME/.bosh
+$ rm -rf $HOME/.cf
+$ rm -rf $HOME/.credhub
+$ rm -rf $HOME/.uaac.yml
+$ rm -rf $HOME/workspace/paasta-5bosh en.0/deployment/bosh-deployment/aws/creds.yml

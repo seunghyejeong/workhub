@@ -1,0 +1,42 @@
+---
+- type: replace
+  path: /releases/-
+  value:
+    name: cce-check
+    url: file:///home/ubuntu/workspace/cce-check/release/cce-check-0.1.0.tgz
+    version: 0.1.0
+
+#########################################################
+### lifecycle-service 
+#########################################################
+- type: replace
+  path: /instance_groups/name=mariadb/jobs/-
+  value:
+    name: cce-service
+    release: cce-check
+    properties:
+      cce_scripts:
+        - script_name: mysql_8.0_v4.1.bin
+          params: |
+            /var/vcap/packages/mariadb/bin/mysql
+            /var/vcap/jobs/mariadb/config/mariadb.cnf
+            1
+            localhost
+            root/((mariadb_admin_password))
+
+### cce script 오류로 수동확인 진행필요
+#- type: replace
+#  path: /instance_groups/name=app-lifecycle/jobs/-
+#  value:
+#    name: cce-service
+#    release: cce-check
+#    properties:
+#      cce_scripts:
+#        - script_name: postgresql_v4.1.bin
+#          params: |
+#            /usr/lib/postgresql/9.5/bin
+#            /etc/postgresql/9.5/main
+#            127.0.0.1
+#            taiga
+#            5432
+#            postgres

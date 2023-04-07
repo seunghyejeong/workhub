@@ -1,0 +1,252 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: mariadb-job
+spec:
+  template:
+    spec:
+      containers:
+      - name: mariadb-job
+        image: mariadb:10.7
+        command: ["sh", "-c", "mysqldump -u root -p user > user_info.sql" ]
+      restartPolicy: Never
+
+---
+
+
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: mariadb-cronjob
+spec:
+  schedule: "30 8  * * 1"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: mariadb-job
+            image: mariadb:10.7
+            command: ["sh", "-c", "sudo mysqldump -u root -p mysql > mysql.sql && " ]
+          restartPolicy: Never
+
+
+
+command: ["bash"]
+args:
+- -c
+- mysqldump -u root -p user > user_info.sql && sleep 5 && 
+
+
+spec.timezone
+Asia/Seoul
+
+
+
+
+
+30 8  * * 1 
+매주 월요일 20:00 백업 
+At 08:30 on Monday.
+
+
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: hello-every-minute
+spec:
+  schedule: "*/1 * * * *"
+  successfulJobsHistoryLimit: 5
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+          - name: hello
+            image: ubuntu:focal
+            command: ["sh", "-c", "echo Hello $(date)!"]
+
+
+
+
+
+
+ volumeMounts:
+        - name: mariadb-persistent-storage
+          mountPath: /docker-entrypoint-initdb.d # 해당 폴더에 .sql 파일 존재 시 Container 생성 시 실행
+        - name: mairadb-data
+          mountPath: /var/lib/mysql # MariaDB 이미지 공식 데이터 저장소 경로
+         
+
+      volumes:
+      - name: mariadb-persistent-storage
+        configMap:
+          name: mariadb-initdb-config # configMap 설정
+      - name: mairadb-data
+        persistentVolumeClaim:
+          claimName: mariadb-pv-claim # pv 볼륨 설정
+
+
+
+
+
+
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mariadb-set
+  labels:
+    app: mariadb
+spec:
+  selector:
+    matchLabels:
+      app: mariadb
+  serviceName: "mariadb"
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: mariadb
+    spec:
+      initContainers:
+      - name: create-mariadb-backup-dir
+        image: busybox
+        command: ['sh', '-c', 'mkdir -p /backup/mariadb']
+        volumeMounts:
+        - name: backup-script
+          mountPath: /backup
+      containers:
+      - name: mariadb
+        image: mariadb
+        ports:
+        - containerPort: 3306
+        volumeMounts:
+        - name: mariadb-store
+          mountPath: /var/lib/mysql
+        - name: db-init-script
+          mountPath: /docker-entrypoint-initdb.d/init.sql
+        env:
+          - name: MYSQL_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: mariadb-password
+                key: password
+      volumes:
+      - name: backup-script
+        emptyDir: {}
+      - name: db-init-script
+        configMap:
+          name: db-init-script
+  volumeClaimTemplates:
+  - metadata:
+      name: mariadb-store
+    spec:
+      accessModes: ["ReadWriteMany"]
+      storageClassName: "nfs-client"
+      resources:
+        requests:
+          storage: 1Gi
+
+
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: mariadb-backup
+spec:
+  schedule: "*/2 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: mariadb-backup
+            image: mariadb
+            command: ["/bin/bash", "-c", "~/workspace/2-mariadb/mariadb-statefulset-ver2/mariadb-backup.sh"]
+          restartPolicy: OnFailure
+
+
+#!/bin/bash
+DATE=$(date +%Y-%m-%d_%H-%M-%S)
+mysqldump -u admin -padmin test > ~/workspace/2-mariadb/mariadb-statefulset-ver2/backup/$DATE.sql
+
+
+
+
+
+
+
+
+
+
+
+
+
+#0331
+---
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mariadb-set
+  labels:
+    app: mariadb
+spec:
+  selector:
+    matchLabels:
+      app: mariadb
+  serviceName: "mariadb"
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: mariadb
+    spec:
+      initContainers:
+      - name: init-mariadb
+        image: busybox
+        command: ['sh', '-c', 'mkdir -p /home/mariadb']
+        volumeMounts:
+        - name: backup-script
+          mountPath: /home/mariadb
+      containers:
+      - name: mariadb
+        image: mariadb
+        ports:
+        - containerPort: 3306
+        volumeMounts:
+        - name: mariadb-store
+          mountPath: /var/lib/mysql
+        - name: db-init-script
+          mountPath: /docker-entrypoint-initdb.d/init.sql
+          subPath: init.sql
+        - name: backup-script
+          mountPath: /home/mariadb
+        env:
+          - name: MYSQL_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: mariadb-password
+                key: password
+      volumes:
+      - name: db-init-script
+        configMap:
+          name: db-init-script
+  volumeClaimTemplates:
+  - metadata:
+      name: mariadb-store
+    spec:
+      accessModes: ["ReadWriteMany"]
+      storageClassName: "nfs-client"
+      resources:
+        requests:
+          storage: 1Gi
+  - metadata:
+      name: backup-script
+    spec:
+      accessModes: ["ReadWriteMany"]
+      storageClassName: "nfs-client"
+      resources:
+        requests:
+          storage: 1Gi

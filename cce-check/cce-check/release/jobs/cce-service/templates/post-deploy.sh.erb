@@ -1,0 +1,42 @@
+#!/bin/bash
+  
+set -e -x
+
+SCRIPT_DIR=/var/vcap/jobs/cce-service/scripts
+CCE_DIR=/var/vcap/cce
+
+<%
+
+if_p('cce_scripts') do |scripts|
+
+  scripts.each do |script|
+    script_name = script['script_name']
+    set_env = ''
+    if script['env_variable'] then set_env = script['env_variable'] end
+    input = ''
+    if script['params'] then input = script['params'] end
+%>
+echo <%= "#{set_env}" %> >>  ${SCRIPT_DIR}/cce-service.sh
+echo "
+./<%= "#{script_name}" %> << EOF
+<%= spec.ip %>
+<%= "#{input}" %>
+EOF
+" >>  ${SCRIPT_DIR}/cce-service.sh
+echo "#######[CCE :: <%= "#{script_name}" %> ::  END]####################" >>  ${SCRIPT_DIR}/cce-service.sh
+
+<%
+  end
+end
+%>
+
+mkdir -p ${CCE_DIR}
+cp -r ${SCRIPT_DIR}/* ${CCE_DIR}
+
+chmod +x ${CCE_DIR}/*.bin
+chmod +x ${CCE_DIR}/*.sh
+
+cd ${CCE_DIR}
+
+source ${CCE_DIR}/cce-service.sh
+

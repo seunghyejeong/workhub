@@ -1,0 +1,38 @@
+# STEMCELL
+stemcell_os: "ubuntu-bionic"                                                         # stemcell os
+stemcell_version: "1.169"                                                           # stemcell version
+
+# VM_TYPE
+vm_type_default: "medium"                                                            # vm type default
+vm_type_highmem: "small-highmem-16GB"                                                # vm type highmemory
+
+# NETWORK
+private_networks_name: "default"                                                     # private network name
+public_networks_name: "default"                                                          # public network name :: The public network name can only use "vip" or "service_public".
+
+# MARIA_DB
+mariadb_azs: [z3]                                                                    # mariadb : azs
+mariadb_instances: 1                                                                 # mariadb : instances (1) 
+mariadb_persistent_disk_type: "10GB"                                                 # mariadb : persistent disk type 
+mariadb_port: "31306"                                                       # mariadb : database port (e.g. 31306) -- Do Not Use "3306"
+mariadb_admin_password: "paas-ta!admin"                                   # mariadb : database admin password (e.g. "paas-ta!admin")
+mariadb_broker_username: "applifecycle"                                 # mariadb : service-broker-user id (e.g. "applifecycle")
+mariadb_broker_password: "broker!admin"                                 # mariadb : service-broker-user password (e.g. "broker!admin")
+
+# SERVICE-BROKER
+broker_azs: [z3]                                                                     # service-broker : azs
+broker_instances: 1                                                                  # service-broker : instances (1)
+broker_port: "8080"                                                 # service-broker : broker port (e.g. "8080")
+broker_logging_level_broker: "INFO"                                                  # service-broker : broker logging level
+broker_logging_level_hibernate: "INFO"                                               # service-broker : hibernate logging level
+broker_services_id: "b988f110-2bc3-46ce-8e55-9b8d50e529d4"                                 # service-broker : service guid (e.g. "b988f110-2bc3-46ce-8e55-9b8d50e529d4")
+broker_services_plans_id: "6eb97b3e-91db-4880-ad8a-503003e8e7dd"                     # service-broker : service plan id (e.g. "6eb97b3e-91db-4880-ad8a-503003e8e7dd")
+
+# APP-LIFECYCLE
+app_lifecycle_azs: [z7]                                                              # app-lifecycle : azs
+app_lifecycle_instances: 1                                                           # app-lifecycle : instances (N)
+app_lifecycle_persistent_disk_type: "20GB"                                           # app-lifecycle : persistent disk type
+app_lifecycle_public_ips: "10.160.60.51"                               # app-lifecycle : public ips (e.g. ["00.00.00.00" , "11.11.11.11"])
+app_lifecycle_admin_password: "admin!super"                       # app-lifecycle : app-lifecycle super admin password (e.g. "admin!super")
+app_lifecycle_serviceadmin_password: "Service!admin"    # app-lifecycle : app-lifecycle serviceadmin user init password (e.g. "Service!admin")
+postgres_port: "5524"                                       # app-lifecycle : app-lifecycle postgres port (e.g. "5524" default:5432)

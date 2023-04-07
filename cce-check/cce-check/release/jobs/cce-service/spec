@@ -1,0 +1,34 @@
+---
+name: cce-service
+
+templates:
+  post-deploy.sh.erb: bin/post-deploy
+  scripts/cce-service.sh.erb: scripts/cce-service.sh
+  scripts/apache_v4.1.bin: scripts/apache_v4.1.bin
+  scripts/docker_v4.1.bin: scripts/docker_v4.1.bin
+  scripts/elasticsearch_v4.1.bin: scripts/elasticsearch_v4.1.bin
+  scripts/influxDB_v4.1.bin: scripts/influxDB_v4.1.bin
+  scripts/mongodb_v4.1.bin: scripts/mongodb_v4.1.bin
+  scripts/mysql_5.6_v4.1.bin: scripts/mysql_5.6_v4.1.bin
+  scripts/mysql_5.7_v4.1.bin: scripts/mysql_5.7_v4.1.bin
+  scripts/mysql_5.7_v4.1_PaaS-TA.bin: scripts/mysql_5.7_v4.1_PaaS-TA.bin
+  scripts/mysql_8.0_v4.1.bin: scripts/mysql_8.0_v4.1.bin
+  scripts/postgresql_v4.1.bin: scripts/postgresql_v4.1.bin
+  scripts/rabbitmq_v4.1.bin: scripts/rabbitmq_v4.1.bin
+  scripts/redis_v4.1.bin: scripts/redis_v4.1.bin
+  scripts/tomcat_v4.1.bin: scripts/tomcat_v4.1.bin
+  scripts/hadoop_v4.1.bin: scripts/hadoop_v4.1.bin
+
+packages: []
+
+properties: 
+  cce_scripts:
+    example: |
+      - script_name: mysql_5.7_v4.1_PaaS-TA.bin
+        params: |
+          /var/vcap/packages/mariadb/bin/mysql
+          /var/vcap/jobs/mysql/config/my.cnf
+          /var/vcap/data/sys/run/mysql/mysqld.sock
+          1
+          localhost
+        env_variable: "export JRE_HOME=/var/vcap/packages/uaa/jdk"
