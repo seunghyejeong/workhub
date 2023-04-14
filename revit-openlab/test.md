@@ -31,12 +31,12 @@ DB password: paasta2023!
 
 ncp-paasta-admin-key.pem
 
----
+---ingress-nginx-controller-5695665f5f-svh7t
 
 ## test
 
 1. cf login
-$ cf login -a api.sys.openlab-01.kr --sso
+$ cf login -a api.sys.openlab-01.kr --sso --skip-ssl-validation
 
 API endpoint: api.sys.openlab-01.kr
 

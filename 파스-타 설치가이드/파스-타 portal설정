@@ -27,7 +27,7 @@ portal_default_api_url:
 # paasta vars.yml
 - haproxy_public_ip:  			
 		common_vars.yml = system_domain
-- uaa_login_links_passwd, uaa_login_links_signup, uaa_login_logout_redirect_parameter_whitelist, uaa_client_portal_redirect_uri  
+- _login_links_passwd, uaa_login_links_signup, uaa_login_logout_redirect_parameter_whitelist, uaa_client_portal_redirect_uri  
 		portal ui ip
 
 
