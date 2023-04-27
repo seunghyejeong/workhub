@@ -1,0 +1,59 @@
+---
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mariadb-set
+  labels:
+    app: mariadb
+spec:
+  selector:
+    matchLabels:
+      app: mariadb
+  serviceName: "mariadb"
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: mariadb
+    spec:
+      containers:
+      - name: mariadb
+        image: mariadb
+        ports:
+        - containerPort: 3306
+        volumeMounts:
+        - name: mariadb-store
+          mountPath: /var/lib/mysql
+        - name: db-init-script
+          mountPath: /docker-entrypoint-initdb.d/init.sql
+          subPath: init.sql
+        - name: backup-script
+          mountPath: /mnt
+        env:
+          - name: MYSQL_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: mariadb-password
+                key: password
+      volumes:
+      - name: db-init-script
+        configMap:
+          name: db-init-script
+  volumeClaimTemplates:
+  - metadata:
+      name: mariadb-store
+    spec:
+      accessModes: ["ReadWriteMany"]
+      storageClassName: "nfs-client"
+      resources:
+        requests:
+          storage: 1Gi
+  - metadata:
+      name: backup-script
+    spec:
+      accessModes: ["ReadWriteMany"]
+      storageClassName: "nfs-client"
+      resources:
+        requests:
+          storage: 1Gi

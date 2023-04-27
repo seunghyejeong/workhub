@@ -1,0 +1,139 @@
+# STEMCELL
+stemcell_os: "ubuntu-bionic"		# Stemcell OS
+stemcell_version: "1.169"		# Stemcell Version
+
+
+# VARIABLE
+syslog_forwarder_custom_rule: 'if ($msg contains "DEBUG") then stop'      # PaaS-TA Logging Agent에서 전송할 Custom Rule
+syslog_forwarder_fallback_servers: []
+portal_deploy_type: "vm"                     # PaaS-TA Portal 배포 타입(vm, app)
+
+
+# Fluentd
+fluentd_azs: ["z4"]                    # fluentd : azs
+fluentd_instances: 1                   # fluentd : instances (1)
+fluentd_vm_type: "small"               # fluentd : vm type
+fluentd_network: "default"             # fluentd 네트워크
+fluentd_ip: "10.160.64.14"
+fluentd_port: "3514"                   # fluentd Port
+fluentd_transport: "tcp"               # fluentd Logging Protocol
+
+
+# INFLUXDB
+influxdb_azs: ["z4"]			            # InfluxDB : azs
+influxdb_instances: 1			            # InfluxDB : instances (1)
+influxdb_vm_type: "large"		          # InfluxDB : vm type
+influxdb_network: "default"		        # InfluxDB 네트워크
+influxdb_persistent_disk_type: "10GB"	# InfluxDB 영구 Disk 종류
+
+influxdb_ip: "10.160.64.41"
+influxdb_http_port: "8086"                  # default 8086
+influxdb_username: "admin"	  # InfluxDB Admin 계정 Username
+influxdb_password: "PaaS-TA2022"	  # InfluxDB Admin 계정 Password
+influxdb_interval: "7d"                     # InfluxDB Retention Policy (bootstrapper)
+influxdb_https_enabled: "true"              # InfluxDB HTTPS 설정
+
+influxdb_database: "logging_db"          # InfluxDB Database명
+influxdb_measurement: "logging_measurement"    # InfluxDB Measurement명
+influxdb_time_precision: "s"    # hour(h), minutes(m), second(s), millisecond(ms), microsecond(u), nanosecond(ns)
+influxdb_query_limit: "50"                  # InfluxDB query limit (default "50")
+
+
+# COLLECTOR
+collector_azs: ["z4"]           # collector : azs
+collector_instances: 1          # collector : instances (1)
+collector_vm_type: "small"      # collector : vm type
+collector_network: "default"    # collector 네트워크
+
+
+# LOG-API
+log_api_azs: ["z4"]                                             # log-api : azs
+log_api_instances: 1                                            # log-api : instances (1)
+log_api_vm_type: "small"                                        # log-api : vm type
+log_api_network: "default"                                      # log-api 네트워크
+ubuntu@paasta-ta-bami-inception-1:~/workspace/cce2023/service-deployment$ cat mongodb/vars.yml 
+# STEMCELL
+stemcell_os: "ubuntu-bionic"                                     # stemcell os
+stemcell_version: "1.169"                                       # stemcell version
+
+# NETWORK
+private_networks_name: "default"                                 # private network name
+
+# MONGODB_REPL_SET_NAME
+replSetName1: "op1"                                              # replica set1 name
+replSetName2: "op2"                                              # replica set2 name
+replSetName3: "op3"                                              # replica set3 name : use to operations/add-replica-set.yml
+
+# MONGODB_SLAVE1
+mongodb_slave1_azs: [z3]                                         # mongodb slave1 azs
+mongodb_slave1_instances: 2                                      # mongodb slave1 instances
+mongodb_slave1_vm_type: "medium"                                 # mongodb slave1 vm type
+mongodb_slave1_persistent_disk_type: "10GB"                      # mongodb slave1 persistent disk type
+mongodb_slave1_static_ips: ["10.160.63.21","10.160.63.22"]        # mongodb slave1's private IPs (e.g. ["10.160.63.11","10.0.81.12"])
+
+# MONGODB_SLAVE2
+mongodb_slave2_azs: [z3]                                         # mongodb slave2 azs
+mongodb_slave2_instances: 2                                      # mongodb slave2 instances
+mongodb_slave2_vm_type: "medium"                                 # mongodb slave2 vm type
+mongodb_slave2_persistent_disk_type: "10GB"                      # mongodb slave2 persistent disk type
+mongodb_slave2_static_ips: ["10.160.63.23","10.160.63.24"]        # mongodb slave2's private IPs (e.g. ["10.160.63.14","10.0.81.15"])
+
+# MONGODB_SLAVE3 : use to operations/add-replica-set.yml
+mongodb_slave3_azs: [z3]                                         # mongodb slave3 azs
+mongodb_slave3_instances: 2                                      # mongodb slave3 instances
+mongodb_slave3_vm_type: "medium"                                 # mongodb slave3 vm type
+mongodb_slave3_persistent_disk_type: "10GB"                      # mongodb slave3 persistent disk type
+mongodb_slave3_static_ips: ["10.160.63.25","10.160.63.26"]        # mongodb slave3's private IPs (e.g. ["10.160.63.17","10.0.81.18"])
+
+# MONGODB_MASTER1
+mongodb_master1_azs: [z3]                                                # mongodb master1 azs
+mongodb_master1_instances: 1                                             # mongodb master1 instances
+mongodb_master1_vm_type: "medium"                                        # mongodb master1 vm type
+mongodb_master1_persistent_disk_type: "10GB"                             # mongodb master1 persistent disk type
+mongodb_master1_static_ips: "10.160.63.27"               # mongodb master1's private IP (e.g. "10.0.81.10")
+mongodb_master1_replSet_hosts: ["10.160.63.27","10.160.63.21","10.160.63.22"]         # 첫번째 Host는 replicaSet1 의master1 ip, 차례대로 slave1 의 ips. (e.g. ["10.0.81.10", "10.0.81.11","10.0.81.12"])
+
+# MONGODB_MASTER2
+mongodb_master2_azs: [z3]                                                # mongodb master2 azs
+mongodb_master2_instances: 1                                             # mongodb master2 instances
+mongodb_master2_vm_type: "medium"                                        # mongodb master2 vm type
+mongodb_master2_persistent_disk_type: "10GB"                             # mongodb master2 persistent disk type
+mongodb_master2_static_ips: "10.160.63.28"               # mongodb master2's private IP (e.g. "10.0.81.13")
+mongodb_master2_replSet_hosts: ["10.160.63.28","10.160.63.23","10.160.63.24"]         # 첫번째 Host는 replicaSet2 의master2 ip, 차례대로 slave2 의 ips. (e.g. ["10.0.81.13", "10.0.81.14","10.0.81.15"])
+
+# MONGODB_MASTER3 : use to operations/add-replica-set.yml
+mongodb_master3_azs: [z3]                                                # mongodb master3 azs
+mongodb_master3_instances: 1                                             # mongodb master3 instances
+mongodb_master3_vm_type: "medium"                                        # mongodb master3 vm type
+mongodb_master3_persistent_disk_type: "10GB"                             # mongodb master3 persistent disk type
+mongodb_master3_static_ips: "10.160.63.29"               # mongodb master3's private IP (e.g. "10.0.81.16")
+mongodb_master3_replSet_hosts: ["10.160.63.29","10.160.63.25","10.160.63.26"]         # 첫번째 Host는 replicaSet3 의master3 ip, 차례대로 slave3 의 ips. (e.g. ["10.0.81.16", "10.0.81.17","10.0.81.18"])
+
+# MONGODB_CONFIG
+mongodb_config_azs: [z3]                                                 # mongodb config azs
+mongodb_config_instances: 2                                              # mongodb config instances : less than 3 instances
+mongodb_config_vm_type: "medium"                                         # mongodb config vm type
+mongodb_config_persistent_disk_type: "10GB"                              # mongodb config persistent disk type
+mongodb_config_static_ips: ["10.160.63.30","10.160.63.31"]                # mongodb config's private IPs (e.g. ["10.0.81.19", "10.0.81.20"])
+
+# MONGODB_SHARD
+mongodb_shard_azs: [z3]                                                  # mongodb shard azs
+mongodb_shard_instances: 1                                               # mongodb shard instances
+mongodb_shard_vm_type: "medium"                                          # mongodb shard vm type
+mongodb_shard_static_ips: "10.160.63.33"                   # mongodb shard's private IP (e.g. "10.0.81.21")
+
+# MONGODB_BROKER
+mongodb_broker_azs: [z3]                                                 # mongodb broker azs
+mongodb_broker_instances: 1                                              # mongodb broker instances
+mongodb_broker_vm_type: "medium"                                         # mongodb broker vm type
+mongodb_broker_static_ips: "10.160.63.34"                 # mongodb broker's private IP (e.g. "10.0.81.22")
+
+# BROKER_REGISTRAR
+broker_registrar_broker_azs: [z3]                                        # broker registrar azs
+broker_registrar_broker_instances: 1                                     # broker registrar instances
+broker_registrar_broker_vm_type: "medium"                                # broker registrar vm type
+
+# BROKER_DEREGISTRAR
+broker_deregistrar_broker_azs: [z3]                                      # broker deregistrar azs
+broker_deregistrar_broker_instances: 1                                   # broker deregistrar instances
+broker_deregistrar_broker_vm_type: "medium"                              # broker deregistrar vm type

@@ -1,0 +1,18 @@
+apiVersion:  v1
+kind: ConfigMap
+metadata:
+  name: db-init-script
+data:
+  init.sql: |
+    CREATE USER 'admin'@'%' IDENTIFIED BY 'admin';
+    GRANT all privileges on *.* to 'admin'@'%';
+    FLUSH PRIVILEGES;
+    CREATE DATABASE IF NOT EXISTS test;
+    USE test;
+    CREATE TABLE IF NOT EXISTS users(
+    id INT(11) NOT NULL AUTO_INCREMENT,
+    name VARCHAR(40),
+    email VARCHAR(40),
+    PRIMARY KEY(id)
+    ) ENGINE=InnoDB;
+~
