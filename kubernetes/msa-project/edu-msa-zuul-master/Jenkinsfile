@@ -1,0 +1,56 @@
+pipeline {
+  agent any
+
+  tools{
+  maven 'maven' 
+  }
+
+stages {
+stage('Checkout Application Git Branch') {
+steps {
+git url: 'https://github.com/seunghyejeong/gitops-repository.git', branch: 'main'
+}        
+post {
+failure {
+echo 'Failed to clone repository'
+}
+success {
+echo 'Repository cloned successfully'
+}
+}
+}
+
+stage('Maven Jar Build') {
+steps {
+sh 'mvn -f /var/jenkins_home/workspace/edu-msa-zuul/edu-msa-zuul-master/pom.xml clean package'
+}
+post {
+failure {
+echo 'Failed to build Maven'
+}
+success {
+echo 'Maven war built successfully!'
+}
+}
+}
+
+stage('Docker Login'){
+steps{
+withCredentials([usernamePassword(credentialsId: 'docker-token', passwordVariable: 'tlqkfak0315!', usernameVariable: 'seunghyejeong')]) {
+sh 'docker login -u seunghyejeong -p tlqkfak0315!'
+}   
+}
+}
+
+stage('Deploy our image') { 
+steps { 
+script {
+    sh 'cd /var/jenkins_home/workspace/edu-msa-zuul/edu-msa-zuul-master && docker build -t edu-msa-zuul-master .'
+    sh 'docker tag edu-msa-zuul-master seunghyejeong/edu-msa-zuul-master:latest'
+    sh 'docker push seunghyejeong/edu-msa-zuul-master:latest'
+} 
+}
+}
+
+}
+}

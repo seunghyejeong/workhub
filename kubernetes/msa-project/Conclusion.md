@@ -46,26 +46,12 @@ RUN echo "deb [arch=$(dpkg --print-architecture) \
   signed-by=/usr/share/keyrings/docker-archive-keyring.asc] \
   https://download.docker.com/linux/debian \
   $(lsb_release -cs) stable" > /etc/apt/sources.list.d/docker.list
-RUN apt-get update && apt-get install -y docker-ce-cli
+RUN apt-get update && apt-get install -y docker-ce docker-ce-cli containerd.io
+RUN service docker start
+RUN usermod -aG docker jenkins
 USER jenkins
-RUN jenkins-plugin-cli --plugins "blueocean docker-workflow"
-
-docker build -t myjenkins-blueocean:2.387.2-1 .
-
-docker run \
-  --name jenkins-blueocean \
-  --restart=on-failure \
-  --detach \
-  --network jenkins \
-  --env DOCKER_HOST=tcp://docker:2376 \
-  --env DOCKER_CERT_PATH=/certs/client \
-  --env DOCKER_TLS_VERIFY=1 \
-  --publish 8080:8080 \
-  --publish 50000:50000 \
-  --volume jenkins-data:/var/jenkins_home \
-  --volume jenkins-docker-certs:/certs/client:ro \
-  myjenkins-blueocean:2.387.2-1 
 ```
+
 
 2. local(jenkins server)의 /var/run(docker.sock)을 volume mount 해준다
 
@@ -207,7 +193,7 @@ SCM: GIT
 Repository: GIT URL
 Branchs to Build: /main
 script Path: {IF_FOLDER_EXSIST_FOLDERNAME}/Jenkinsfile
-* scriptPath에 "/" 조심. 
+* scriptPath에 "/" 조심. 넣으면안돼 
 4) apply
 
 
