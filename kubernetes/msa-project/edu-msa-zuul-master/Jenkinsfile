@@ -45,7 +45,7 @@ sh 'docker login -u seunghyejeong -p tlqkfak0315!'
 stage('Deploy our image') { 
 steps { 
 script {
-    sh 'cd /var/jenkins_home/workspace/edu-msa-zuul/edu-msa-zuul-master && docker build -t edu-msa-zuul-master .'
+    sh 'sh 'cp /var/jenkins_home/workspace/edu-msa-zuul/edu-msa-zuul-master/target/edu-msa-zuul-1.0.0.war /var/jenkins_home/workspace/edu-msa-zuul/edu-msa-zuul-master'
     sh 'docker tag edu-msa-zuul-master seunghyejeong/edu-msa-zuul-master:latest'
     sh 'docker push seunghyejeong/edu-msa-zuul-master:latest'
 } 
