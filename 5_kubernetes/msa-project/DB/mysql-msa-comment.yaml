@@ -1,0 +1,67 @@
+apiVersion:  v1
+kind: ConfigMap
+metadata:
+  name: mysql-msa-comment-config
+data:
+  init.sql: |
+		CREATE DATABASE msa_comment default CHARACTER SET UTF8;
+		USE msa_comment;
+		CREATE TABLE `TB_COMMENT` (
+		  `comment_seq` int(11) NOT NULL AUTO_INCREMENT,
+		  `board_seq` int(11) NOT NULL,
+		  `comment` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+		  `write_user_id` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
+		  `write_user_name` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
+		  `use_yn` varchar(1) COLLATE utf8_unicode_ci DEFAULT 'Y',
+		  `create_dt` datetime NOT NULL,
+		  `update_dt` datetime NOT NULL,
+		  PRIMARY KEY (`comment_seq`)
+		) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-msa-comment
+spec:
+  selector:
+    matchLabels:
+      app: mysql-comment
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: mysql-comment
+    spec:
+      containers:
+      - image: mysql:5.6
+        name: mysql-comment
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: password
+        ports:
+        - containerPort: 3306
+          name: mysql-comment
+        volumeMounts:
+        - name: mysql-msa-comment-config
+          mountPath: /docker-entrypoint-initdb.d/init.sql
+      volumes:
+      - name: mysql-comment
+      - name: mysql-msa-comment.config
+        configMap:
+          name: mysql-msa-comment-config      
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-msa-comment
+spec:
+  type: NodePort
+  ports:
+  - port: 3306
+    protocol: TCP
+    targetPort: 3306
+    nodePort: 30301
+  selector:
+    app: mysql-comment
+

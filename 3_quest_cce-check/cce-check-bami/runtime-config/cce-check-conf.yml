@@ -1,0 +1,27 @@
+releases:
+- name: "cce-check"
+  url:  file:///home/ubuntu/workspace/cce-check/release/cce-check-0.1.1.tgz
+  sha1: "a99855aa68b09c05311cb392379e206b497f2d77"
+  version: "0.1.1"
+
+addons:
+- include:
+    stemcell:
+    - os: ubuntu-trusty
+    - os: ubuntu-xenial
+    - os: ubuntu-bionic
+  name: cce-check
+  jobs:
+  - name: cce-common
+    release: cce-check
+    properties:
+      ftp_use: true
+      ftp_ip: "10.x.x.x"
+      ftp_key: |
+        -----BEGIN RSA PRIVATE KEY-----
+        MIIEpAIBAAKCAQEA92+s6M6GdO/+P/xVKPjAuXusoLEBiNTGRWU1hOdsQoLx3w4H
+        RjCsmaB2PvFje4lWqTQyno4a+ivPziMkU7qys16Zuy5nUqm6qeYCtijfarhC6vO4
+       .....
+        A9AvblXHeL0f55B4zi4c999gRglP2dWfSEZtx8YRx5Vdff90QPZPO9gljSBf3Z2C
+        GLMRipssbbJRLvjSkjhi491SUFxtZiWNPoJl8kODAjr19gcs3yxcdA==
+        -----END RSA PRIVATE KEY-----

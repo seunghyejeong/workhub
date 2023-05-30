@@ -1,7 +1,0 @@
- win / mac 호환
-        window는 file path를 \(CR)로 쓰고 mac은 /(LF)을 쓰는 차이에서 오는 통신 불가능 상태 (CRLF)
-        이에 OS가 달라도 문제가 없도록 처리 방법을 결정해준다.
-
-        git config --global core.eol lf            LF를 line ending으로 사용한다
-        git config --global core.eol false      파일에 CRLF를 썼든 LF를 썼든 git은 상관하지 않고 파일 그대로 chekin chekout 한다.
-

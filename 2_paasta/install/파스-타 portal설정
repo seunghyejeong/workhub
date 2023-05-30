@@ -1,0 +1,42 @@
+
+
+# portal ui vars.yml
+
+haproxy_public_ips:
+		portal ui ip
+portal_default_api_url:
+		portal api ip
+
+
+# poratl api vars,yml
+
+- haproxy_public_ips: 
+		portal api ip
+
+
+# paasta common_vars.yml
+- system_domain:			
+		paasta core  
+- portal_web_user_url:		
+		portal ui ip
+- portal_web_user_ip:		
+		portal ui ip	
+
+
+
+# paasta vars.yml
+- haproxy_public_ip:  			
+		common_vars.yml = system_domain
+- _login_links_passwd, uaa_login_links_signup, uaa_login_logout_redirect_parameter_whitelist, uaa_client_portal_redirect_uri  
+		portal ui ip
+
+
+
+
+
+
+
+
+203.255.255.124(core ip / bosh랑 연결)
+
+

@@ -1,0 +1,41 @@
+---
+- type: replace
+  path: /releases/-
+  value:
+    name: cce-check
+    url: file:///home/ubuntu/workspace/cce-check/release/cce-check-0.1.0.tgz
+    version: 0.1.0
+
+#########################################################
+### source-control-service
+#########################################################
+- type: replace
+  path: /instance_groups/name=mariadb/jobs/-
+  value:
+    name: cce-service
+    release: cce-check
+    properties:
+      cce_scripts:
+        - script_name: mysql_8.0_v4.1.bin
+          params: |
+            /var/vcap/store/mariadb/bin/mysql
+            /var/vcap/store/mariadb/mariadb.cnf
+            1
+            localhost
+            root/((mariadb_admin_password))
+
+- type: replace
+  path: /instance_groups/name=sourcecontrol-webui/jobs/-
+  value:
+    name: cce-service
+    release: cce-check
+    properties:
+      cce_scripts:
+        - script_name: tomcat_v4.1.bin
+          params: |
+            /var/vcap/packages/tomcat
+            /var/vcap/packages/tomcat/conf
+            /var/vcap/packages/tomcat/webapps
+          env_variable: "export JRE_HOME=/var/vcap/packages/java8/jre"
+
+

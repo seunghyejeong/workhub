@@ -1,0 +1,18 @@
+<Query script>
+
+CREATE TABLE board (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  title VARCHAR(20),
+  content VARCHAR(2000)
+);
+
+INSERT INTO board (title, content) VALUES ('testappTitle-1', 'testAppContent-1');
+INSERT INTO board (title, content) VALUES ('testappTitle-2', 'testAppContent-2');
+INSERT INTO board (title, content) VALUES ('testappTitle-3', 'testAppContent-3');
+INSERT INTO board (title, content) VALUES ('testappTitle-4', 'testAppContent-4');
+INSERT INTO board (title, content) VALUES ('testappTitle-5', 'testAppContent-5');
+INSERT INTO board (title, content) VALUES ('testappTitle-6', 'testAppContent-6');
+INSERT INTO board (title, content) VALUES ('testappTitle-7', 'testAppContent-7');
+INSERT INTO board (title, content) VALUES ('testappTitle-8', 'testAppContent-8');
+INSERT INTO board (title, content) VALUES ('testappTitle-9', 'testAppContent-9');
+INSERT INTO board (title, content) VALUES ('testappTitle-10', 'testAppContent-10');

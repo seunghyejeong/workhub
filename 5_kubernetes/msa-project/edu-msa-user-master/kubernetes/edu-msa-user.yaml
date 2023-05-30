@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: edu-msa-user
+  labels:
+    app: user-msa  
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-msa
+  template:
+    metadata:
+      labels:
+        app: user-msa
+    spec:
+      containers:
+      - name: user-msa
+        image: seunghyejeong/edu-msa-user-master:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 28084      
+      imagePullSecrets:
+         - name: edu-msa-secret        
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: edu-msa-user
+  labels:
+    app: user-msa  
+spec:
+  ports:
+  - nodePort: 30401
+    port: 28084
+    protocol: TCP
+    targetPort: 28084
+  selector:
+    app: user-msa
+  type: NodePort

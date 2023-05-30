@@ -1,0 +1,71 @@
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: mariadb
+  labels:
+    app: mariadb
+spec:
+  ClusterIP: None
+  selector:
+   app: mariadb
+  ports:
+  - name: mariadb 
+    port: 3306
+
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mariadb
+  labels:
+    app: mariadb
+spec:
+  serviceName: "mariadb"
+  replicas: 2
+  selector:
+    matchLabels:
+      app: mariadb
+  template:
+    metadata:
+      labels:
+        app: mariadb
+    spec:
+      containers:
+      - name: mariadb
+        image: mariadb:10.7
+        securityContext:
+          readOnlyRootFilesystem: true
+        env:
+          - name: MARIADB_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: mariadb-secret
+                key: password
+          - name: MARIADB_USER
+            valueFrom:
+              secretKeyRef:
+                name: mariadb-secret
+                key: username
+        ports: 
+        - containerPort: 3306
+          name: mariadb
+        volumeMounts:
+        - name: mariadb-persistent-volume
+          mountPath: /var/lib/mysql
+        - name: mariadb-config-volume
+          mountPath: /etc/mysql/conf.d
+      volumes: 
+      - name: mariadb-config-map
+        configMap:
+          name: config-init
+  volumeClaimTemplates:
+  - metadata:
+      name: mariadb-persistent-volume
+    spec:
+      accessModes: [ "ReadWriteOnce" ] 
+      resources:
+        requests:
+          storage: 500M
+      storageClassName: nfs-client

@@ -1,0 +1,11 @@
+검증시나리오 작성
+	1. 호환성 검증 번호		 :		 COMPATIBILITY_VERIFICATION_SCHEDULE 참고
+	2. 신청 업체 정보 		  : 	   첫 신청 메일 pdf 참조
+	3. 차례 		: 상세 결과 붙여넣기 및 페이징 처리 
+	4. 저장		: 저장은 호환성 검증 번호+파일명_날짜  
+	5. 클라우드 업로드	: 검증 시나리오 결과서 업로드 
+	6. 공유 		: pdf & 한글 파일 저장 후 클라우드 주소 공유
+	7. 엑셀 시트지 수정	: 점검 완료 날짜와 함께 시트지 수정
+	8. 버전 확인하기
+		ap portal은 bosh 엔진과 다르게 ui/portal/infra의 버전이 따로 있음 (git에 있는 portal deployment를 참조해야함)  그리고 sidecar도 portal의 한 부분이기 때문에 sidecar의 버전이 아닌 portal 버전을 기준으로 작성함.
+		
